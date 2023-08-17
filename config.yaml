@@ -1,0 +1,18 @@
+#config.yaml
+
+username:   #学号
+password:   #密码
+
+enable_mail_notification: 1 #是否开启邮件提醒
+
+
+mail_user:   #邮箱账号
+mail_pass:   #邮箱密码
+mail_host:   #邮箱服务器地址
+mail_port:   #邮箱服务器端口
+sender:   #发件人 往往和邮箱账号相同
+receivers:
+  - 2368083136@qq.com #收件人 1
+
+
+# Path: config.yaml
