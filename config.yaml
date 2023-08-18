@@ -1,5 +1,9 @@
 #config.yaml
 
+enable_wifi_connect: 1 #是否开启wifi自动连接
+enable_wifi_reconnect: 1 #是否开启wifi断线重连
+max_wait_time: 10 #最大等待时间
+
 wifi_config:
   username:  #学号
   password:  #密码
