@@ -6,30 +6,27 @@ import portal_connect
 config = yaml_process.read_config()
 data = yaml_process.read_data()
 
-if portal_connect.check_wifi_state():
-    print("Wi-Fi 已连接，无需连接")
+if portal_connect.check_wifi_state() and portal_connect.check_internet_connection():
+    print("Wi-Fi 已连接，网络正常")
 else:
-    print("Wi-Fi 未连接，正在连接")
     wifi_config = config["wifi_config"]
     username = wifi_config["username"]
     password = wifi_config["password"]
     url = data["url"]
     network_ssid = data["portal_SSID"]
-    while not portal_connect.check_wifi_state():
+    response = 0
+    while response != 200:
+        print("网络未连接，正在尝试连接")
         portal_connect.connect_to_wifi(network_ssid)
         response = portal_connect.login(username, password)
-        if response == 200:
-            print("请求成功")
-            break
-        else:
-            print("请求失败")
+    print("登录请求已发送成功")
 
 while True:
     if portal_connect.check_internet_connection():
         print("网络连接正常")
     else:
         print("网络连接异常")
-        exit(1)
+        continue
     if ip_check.check_ip(data):
         print("IP地址或主机名发生变化")
         if config["enable_mail_notification"]:
