@@ -1,6 +1,5 @@
 import requests
 import yaml_process
-import yaml
 import urllib.request
 import pywifi
 from pywifi import const
