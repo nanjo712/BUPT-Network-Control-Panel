@@ -2,7 +2,7 @@ import requests
 import yaml
 import urllib.request
 
-url = 'http://10.3.8.211'
+url = '10.3.8.211'
 
 
 def check_internet_connection():
@@ -24,7 +24,7 @@ def login(username, password):
         'Upgrade-Insecure-Requests': '1',
         'Connection': 'keep-alive'
     }
-    response = requests.post(url, data, headers=headers).status_code
+    response = requests.post('http://'+url+'/login', data, headers=headers).status_code
     return response
 
 
