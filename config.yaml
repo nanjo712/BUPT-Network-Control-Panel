@@ -11,8 +11,8 @@ enable_mail_notification: 0 #是否开启邮件提醒
 mail_config:
   mail_user:   #邮箱账号
   mail_pass:   #邮箱密码
-  mail_host:   #邮箱服务器地址
-  mail_port:   #邮箱服务器端口
+  mail_host: smtp.exmail.qq.com  #邮箱服务器地址
+  mail_port: 465  #邮箱服务器端口
   sender:   #发件人 往往和邮箱账号相同
   receivers:
     - #收件人 1
