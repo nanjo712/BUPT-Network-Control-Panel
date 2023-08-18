@@ -11,7 +11,7 @@ A control panel for BUPT School Network
 
 ## Usage
 
-克隆本仓库，安装requirements.txt内的所有依赖，将两个py脚本设置为开机自动运行即可
+克隆本仓库，安装requirements.txt内的所有依赖，将main.py设为自动运行即可
 
 ## TODO
 
