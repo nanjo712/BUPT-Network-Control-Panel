@@ -139,13 +139,13 @@ class AUTOFSM:
         if self.enable_wifi_connect:
             if self.check_wifi_state():
                 if self.get_current_wifi_ssid() != self.network_ssid:
-                    print("尝试连接BUPT-Portal Wi-Fi网络")
+                    print(f"尝试连接{self.network_ssid} Wi-Fi网络")
                     ret = self.connect_to_wifi()
                     response = self.login()
                     if ret and response == 200:
                         print("Wi-Fi网络连接成功")
             else:
-                print("尝试连接BUPT-Portal Wi-Fi网络")
+                print(f"尝试连接{self.network_ssid} Wi-Fi网络")
                 ret = self.connect_to_wifi()
                 response = self.login()
                 if ret and response == 200:
