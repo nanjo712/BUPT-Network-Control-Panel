@@ -1,8 +1,56 @@
 import requests
+import yaml_process
 import yaml
 import urllib.request
+import pywifi
+from pywifi import const
+import time
 
-url = '10.3.8.211'
+max_wait_time = 10
+wifi = pywifi.PyWiFi()
+iface = wifi.interfaces()[0]
+
+
+def check_wifi_state():
+    if iface.status() == const.IFACE_CONNECTED:
+        return True
+    else:
+        return False
+
+
+def connect_to_wifi(ssid):
+    global wifi
+    global iface
+
+    # 断开当前连接
+    iface.disconnect()
+    time.sleep(1)
+
+    # 创建连接文件
+    profile = pywifi.Profile()
+    profile.ssid = ssid
+    profile.auth = const.AUTH_ALG_OPEN
+    profile.akm.append(const.AKM_TYPE_NONE)
+
+    # 删除所有的连接文件
+    iface.remove_all_network_profiles()
+
+    # 添加连接文件
+    tmp_profile = iface.add_network_profile(profile)
+
+    # 开始连接
+    iface.connect(tmp_profile)
+
+    # 等待连接成功
+    start_time = time.time()
+    while time.time() - start_time < max_wait_time:
+        if iface.status() == const.IFACE_CONNECTED:
+            print(f"成功连接到 Wi-Fi 网络: {ssid}")
+            return True
+        time.sleep(1)
+
+    print("连接超时，无法连接到 Wi-Fi 网络")
+    return False
 
 
 def check_internet_connection():
@@ -14,7 +62,7 @@ def check_internet_connection():
 
 
 def login(username, password):
-    data = {
+    payload = {
         "user": username,
         "pass": password,
     }
@@ -24,7 +72,7 @@ def login(username, password):
         'Upgrade-Insecure-Requests': '1',
         'Connection': 'keep-alive'
     }
-    response = requests.post('http://'+url+'/login', data, headers=headers).status_code
+    response = requests.post('http://' + url + '/login', payload, headers=headers).status_code
     return response
 
 
@@ -34,16 +82,23 @@ def logout():
 
 
 if __name__ == '__main__':
-    with open("config.yaml", "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
-    username = config["username"]
-    password = config["password"]
-    response = login(username, password)
-    if response == 200:
-        print("Request Success")
+    if check_wifi_state():
+        print("Wi-Fi 已连接")
     else:
-        print("Request Failed")
-    if check_internet_connection():
-        print("Internet Connection OK")
-    else:
-        print("Internet Connection Failed")
+        print("Wi-Fi 未连接")
+        config = yaml_process.read_config()
+        data = yaml_process.read_data()
+        username = config["username"]
+        password = config["password"]
+        url = data["url"]
+        network_ssid = data["portal_SSID"]
+        connect_to_wifi(network_ssid)
+        response = login(username, password)
+        if response == 200:
+            print("Request Success")
+        else:
+            print("Request Failed")
+        if check_internet_connection():
+            print("Internet Connection OK")
+        else:
+            print("Internet Connection Failed")
