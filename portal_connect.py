@@ -8,6 +8,12 @@ import time
 max_wait_time = 10
 wifi = pywifi.PyWiFi()
 iface = wifi.interfaces()[0]
+config = yaml_process.read_config()["wifi_config"]
+data = yaml_process.read_data()
+username = config["username"]
+password = config["password"]
+url = data["url"]
+network_ssid = data["portal_SSID"]
 
 
 def check_wifi_state():
@@ -71,6 +77,7 @@ def login(username, password):
         'Upgrade-Insecure-Requests': '1',
         'Connection': 'keep-alive'
     }
+    global url
     response = requests.post('http://' + url + '/login', payload, headers=headers).status_code
     return response
 
@@ -81,23 +88,13 @@ def logout():
 
 
 if __name__ == '__main__':
-    if check_wifi_state():
-        print("Wi-Fi 已连接")
+    connect_to_wifi(network_ssid)
+    response = login(username, password)
+    if response == 200:
+        print("Request Success")
     else:
-        print("Wi-Fi 未连接")
-        config = yaml_process.read_config()["wifi_config"]
-        data = yaml_process.read_data()
-        username = config["username"]
-        password = config["password"]
-        url = data["url"]
-        network_ssid = data["portal_SSID"]
-        connect_to_wifi(network_ssid)
-        response = login(username, password)
-        if response == 200:
-            print("Request Success")
-        else:
-            print("Request Failed")
-        if check_internet_connection():
-            print("Internet Connection OK")
-        else:
-            print("Internet Connection Failed")
+        print("Request Failed")
+    if check_internet_connection():
+        print("Internet Connection OK")
+    else:
+        print("Internet Connection Failed")
