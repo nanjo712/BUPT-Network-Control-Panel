@@ -55,6 +55,10 @@ To use it easily, you can add it to startup application
 
 ## TODO
 
+- Automatically connect to BUPT-mobile
+- Pack it as a CLI tool
+- Develop a GUI
+
 - 自动化连接BUPT-mobile
 - 打包为CLI工具，简化使用
 - 开发图形界面，简化使用
