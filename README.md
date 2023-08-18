@@ -14,12 +14,44 @@ Focused on solve the problem of SSH and remote desktop connection to the school 
 
 ## Supported
 
+- Automatically connect to BUPT-portal
+- Send email notification when IP changes
+
 - 自动化连接BUPT-portal
 - 检测IP变动并发送邮件通知
 
 ## Usage
 
-克隆本仓库，安装requirements.txt内的所有依赖，将main.py设为自动运行即可
+### 1. Install
+
+```bash
+git clone https://github.com/nanjo712/BUPT-Network-Control-Panel.git
+```
+
+### 2. Config
+
+Edit "config.yaml" as the instruction in the file
+
+按照文件中的说明修改"config.yaml"
+
+It's not recommended to use your own email account to send notification, because the password will be stored in plain
+text
+
+不建议使用自己的邮箱账号发送通知，因为密码会以明文形式存储
+
+Edit "data.yaml" is also not recommended unless you know what you are doing
+
+除非你知道自己在做什么，否则不建议修改"data.yaml"
+
+### 3. Run
+
+```bash
+python3 main.py
+```
+
+To use it easily, you can add it to startup application
+
+为了方便使用，你可以将它添加到开机启动项
 
 ## TODO
 
