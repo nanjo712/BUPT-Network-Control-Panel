@@ -85,7 +85,7 @@ if __name__ == '__main__':
         print("Wi-Fi 已连接")
     else:
         print("Wi-Fi 未连接")
-        config = yaml_process.read_config()
+        config = yaml_process.read_config()["wifi_config"]
         data = yaml_process.read_data()
         username = config["username"]
         password = config["password"]

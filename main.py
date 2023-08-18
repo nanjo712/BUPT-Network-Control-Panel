@@ -10,8 +10,9 @@ if portal_connect.check_wifi_state():
     print("Wi-Fi 已连接，无需连接")
 else:
     print("Wi-Fi 未连接，正在连接")
-    username = config["username"]
-    password = config["password"]
+    wifi_config = config["wifi_config"]
+    username = wifi_config["username"]
+    password = wifi_config["password"]
     url = data["url"]
     network_ssid = data["portal_SSID"]
     while not portal_connect.check_wifi_state():
