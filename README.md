@@ -30,6 +30,14 @@ git clone https://github.com/nanjo712/BUPT-Network-Control-Panel.git
 
 ### 2. Config
 
+At your first run, the program will generate a "data.yaml" file and a "config.yaml" file
+
+第一次运行时，程序会生成一个"data.yaml"文件和一个"config.yaml"文件
+
+You should edit "config.yaml" before you run the program again
+
+你应该在再次运行程序之前修改"config.yaml"
+
 Edit "config.yaml" as the instruction in the file
 
 按照文件中的说明修改"config.yaml"
