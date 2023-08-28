@@ -2,3 +2,4 @@ PyYAML~=6.0.1
 requests~=2.31.0
 pywifi~=1.1.12
 comtypes~=1.2.0
+netifaces~=0.11.0
