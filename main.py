@@ -118,6 +118,8 @@ class AUTOFSM:
                 return True
             time.sleep(1)
 
+        return False
+
     def login(self):
         payload = {
             "user": self.username,
