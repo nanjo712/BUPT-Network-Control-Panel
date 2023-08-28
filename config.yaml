@@ -1,0 +1,17 @@
+enable_mail_notification: true
+enable_wifi_connect: true
+enable_wifi_reconnect: true
+mail_config:
+  mail_host: smtp.exmail.qq.com
+  mail_pass: 'Kianakaslana.513'
+  mail_port: 465
+  mail_user: 'yejiacong@bupt.edu.cn'
+  receivers:
+  - 'yejiacong@bupt.edu.cn'
+  - 'yejiacong@outlook.com'
+  - '1113230441@qq.com'
+  sender: 'yejiacong@bupt.edu.cn'
+max_wait_time: 10
+wifi_config:
+  password: '2022211928'
+  username: 'Kianakaslana.513'
