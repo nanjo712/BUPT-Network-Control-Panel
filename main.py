@@ -6,11 +6,14 @@ import time
 import requests
 import subprocess
 import os
+import sys
+import netifaces
 from email.mime.text import MIMEText
 from email.header import Header
 import urllib.request
 import urllib.error
 
+current_os = sys.platform
 
 def check_internet_connection():
     try:
@@ -37,9 +40,24 @@ class AUTOFSM:
         self.wifi = pywifi.PyWiFi()
         self.iface = self.wifi.interfaces()[0]
 
+    def get_ip_address(self):
+        if current_os == "win32":
+            return socket.gethostbyname(socket.gethostname())
+        elif current_os == "linux":
+            interfaces = netifaces.interfaces()
+            for interface in interfaces:
+                addresses = netifaces.ifaddresses(interface)
+                if netifaces.AF_INET in addresses:
+                    for address in addresses[netifaces.AF_INET]:
+                        ip = address['addr']
+                        if ip != '127.0.0.1':
+                            return ip
+        return None
+
     def check_ip(self):
         hostname = socket.gethostname()
-        ip_address = socket.gethostbyname(hostname)
+        ip_address = self.get_ip_address()
+        if (hostname is None) or (ip_address is None): return False
         if (hostname != self.last_host_name) or (ip_address != self.last_ip_address):
             self.data["last_host_name"] = hostname
             self.data["last_ip_address"] = ip_address
@@ -86,16 +104,28 @@ class AUTOFSM:
             return False
 
     def get_current_wifi_ssid(self):
-        if self.check_wifi_state():
-            cmd = "netsh wlan show interfaces"
-            result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            result = result.stdout.decode("gbk")
-            result = result.split("\r\n")
-            for i in result:
-                if "SSID" in i:
-                    return i.split(":")[1].strip()
-        else:
-            return None
+        if current_os == "win32":
+            if self.check_wifi_state():
+                cmd = "netsh wlan show interfaces"
+                result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                result = result.stdout.decode("gbk")
+                result = result.split("\r\n")
+                for i in result:
+                    if "SSID" in i:
+                        return i.split(":")[1].strip()
+            else:
+                return None
+        elif current_os == "linux":
+            if self.check_wifi_state():
+                cmd = "iwgetid"
+                result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                result = result.stdout.decode("utf-8")
+                result = result.split("\n")
+                for i in result:
+                    if "ESSID" in i:
+                        return i.split('"')[1]
+            else:
+                return None
 
     def connect_to_wifi(self):
         self.iface.disconnect()
@@ -230,7 +260,10 @@ else:
     yaml_process.write_config(config)
     exit(0)
 
-fsm = AUTOFSM()
-while True:
-    fsm.run()
-    time.sleep(30)
+
+if __name__ == "__main__":
+    fsm = AUTOFSM()
+    print(fsm.get_ip_address())
+    while True:
+        fsm.run()
+        time.sleep(30)
