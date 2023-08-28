@@ -171,8 +171,15 @@ class AUTOFSM:
         else:
             print("未连接到互联网")
             if self.enable_wifi_reconnect:
-                self.connect_to_wifi()
-                self.login()
+                ret = self.connect_to_wifi()
+                if ret:
+                    response = self.login()
+                    if response == 200:
+                        print("Wi-Fi网络连接成功")
+                    else:
+                        print("Wi-Fi网络连接失败")
+                else:
+                    print("Wi-Fi网络连接失败")
             else:
                 print("Wi-Fi 重连功能已关闭")
                 exit(0)
