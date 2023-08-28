@@ -12,6 +12,10 @@ Focused on solve the problem of SSH and remote desktop connection to the school 
 
 用于解决校园网下SSH和远程桌面连接的问题
 
+It's tested on Windows 11 and Ubuntu 20.04. It should work on other Linux distributions and Windows 10.
+
+已在Windows 11和Ubuntu 20.04上测试通过，应该可以在其他Linux发行版和Windows 10上正常运行
+
 ## Supported
 
 - Automatically connect to BUPT-portal
@@ -56,6 +60,10 @@ Edit "data.yaml" is also not recommended unless you know what you are doing
 ```bash
 python3 main.py
 ```
+
+It's notable that you should run it as root by adding "sudo" before the command.
+
+需要注意的是，你应该以root权限运行它，即在命令前加上"sudo"
 
 To use it easily, you can add it to startup application
 
