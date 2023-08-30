@@ -237,6 +237,13 @@ class AUTOFSM:
         self.config["enable_mail_notification"] = param
         yaml_process.write_config(self.config)
 
+    def set_wifi_account(self, username, password):
+        self.username = username
+        self.password = password
+        self.config["wifi_config"]["username"] = username
+        self.config["wifi_config"]["password"] = password
+        yaml_process.write_config(self.config)
+
 
 data_file = "data.yaml"
 config_file = "config.yaml"

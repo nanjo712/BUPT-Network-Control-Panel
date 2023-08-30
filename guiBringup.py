@@ -4,6 +4,7 @@ from PyQt6.QtGui import QTextCursor
 
 import main
 import mainwindow
+import wifi_settings
 import datetime
 from PyQt6 import QtCore, QtGui, QtWidgets
 import sys
@@ -85,6 +86,17 @@ class stdoutRedirect:
         pass
 
 
+def set_wifi_account(FSM_d: FSM_Thread):
+    dialog = QtWidgets.QDialog()
+    dialog_ui = wifi_settings.Ui_Dialog()
+    dialog_ui.setupUi(dialog)
+    if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
+        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 已设置WiFi账号密码")
+        FSMMutex.lock()
+        FSM_d.FSM.set_wifi_account(dialog_ui.lineEdit_1.text(), dialog_ui.lineEdit_2.text())
+        FSMMutex.unlock()
+
+
 FSM_t = FSM_Thread()
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
@@ -102,6 +114,8 @@ ui.tabWidget.setCurrentWidget(ui.generalTab)
 ui.checkBox_1.stateChanged.connect(lambda: FSM_t.set_enable_wifi_connect(ui.checkBox_1.isChecked()))
 ui.checkBox_2.stateChanged.connect(lambda: FSM_t.set_enable_wifi_reconnect(ui.checkBox_2.isChecked()))
 ui.checkBox_3.stateChanged.connect(lambda: FSM_t.set_enable_mail_notification(ui.checkBox_3.isChecked()))
+ui.textBrowser.textChanged.connect(lambda: ui.textBrowser.moveCursor(QTextCursor.MoveOperation.End))
+ui.pushButton_1.clicked.connect(lambda: set_wifi_account(FSM_t))
 FSM_t.SIGNAL_enable_wifi_connect.connect(
     lambda: ui.checkBox_1.setText("已启用" if FSM_t.get_enable_wifi_connect() else "未启用"))
 FSM_t.SIGNAL_enable_wifi_reconnect.connect(
