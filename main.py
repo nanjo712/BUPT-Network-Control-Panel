@@ -195,7 +195,6 @@ class AUTOFSM:
                     print("Wi-Fi网络连接失败")
         else:
             print("Wi-Fi 连接功能已关闭")
-            exit(0)
         if check_internet_connection():
             print("已连接到互联网")
         else:
@@ -212,8 +211,6 @@ class AUTOFSM:
                     print("Wi-Fi网络连接失败")
             else:
                 print("Wi-Fi 重连功能已关闭")
-                exit(0)
-
         if self.check_ip():
             print("IP地址或主机名发生变化")
             if self.enable_mail_notification:
@@ -223,6 +220,21 @@ class AUTOFSM:
                 print("邮件通知功能已关闭")
         else:
             print("IP地址或主机名未发生变化")
+
+    def set_enable_wifi_connect(self, param):
+        self.enable_wifi_connect = param
+        self.config["enable_wifi_connect"] = param
+        yaml_process.write_config(self.config)
+
+    def set_enable_wifi_reconnect(self, param):
+        self.enable_wifi_reconnect = param
+        self.config["enable_wifi_reconnect"] = param
+        yaml_process.write_config(self.config)
+
+    def set_enable_mail_notification(self, param):
+        self.enable_mail_notification = param
+        self.config["enable_mail_notification"] = param
+        yaml_process.write_config(self.config)
 
 
 data_file = "data.yaml"
