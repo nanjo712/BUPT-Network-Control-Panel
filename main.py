@@ -8,6 +8,7 @@ import subprocess
 import os
 import sys
 import netifaces
+import datetime
 from email.mime.text import MIMEText
 from email.header import Header
 import urllib.request
@@ -172,54 +173,54 @@ class AUTOFSM:
         if self.enable_wifi_connect:
             if self.check_wifi_state():
                 if self.get_current_wifi_ssid() != self.network_ssid:
-                    print(f"尝试连接{self.network_ssid} Wi-Fi网络")
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 尝试连接{self.network_ssid} Wi-Fi网络")
                     ret = self.connect_to_wifi()
                     if ret:
                         response = self.login()
                         if response == 200:
-                            print("Wi-Fi网络连接成功")
+                            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接成功")
                         else :
-                            print("Wi-Fi网络连接失败")
+                            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
                     else :
-                        print("Wi-Fi网络连接失败")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
             else:
-                print(f"尝试连接{self.network_ssid} Wi-Fi网络")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')} 尝试连接{self.network_ssid}] Wi-Fi网络")
                 ret = self.connect_to_wifi()
                 if ret:
                     response = self.login()
                     if response == 200:
-                        print("Wi-Fi网络连接成功")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接成功")
                     else:
-                        print("Wi-Fi网络连接失败")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
                 else:
-                    print("Wi-Fi网络连接失败")
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
         else:
-            print("Wi-Fi 连接功能已关闭")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi 连接功能已关闭")
         if check_internet_connection():
-            print("已连接到互联网")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 已连接到互联网")
         else:
-            print("未连接到互联网")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 未连接到互联网")
             if self.enable_wifi_reconnect:
                 ret = self.connect_to_wifi()
                 if ret:
                     response = self.login()
                     if response == 200:
-                        print("Wi-Fi网络连接成功")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接成功")
                     else:
-                        print("Wi-Fi网络连接失败")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
                 else:
-                    print("Wi-Fi网络连接失败")
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
             else:
-                print("Wi-Fi 重连功能已关闭")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi 重连功能已关闭")
         if self.check_ip():
-            print("IP地址或主机名发生变化")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] IP地址或主机名发生变化")
             if self.enable_mail_notification:
                 self.mail_notification(self.last_host_name, self.last_ip_address)
-                print("邮件通知功能已开启,已发送邮件")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知功能已开启,已发送邮件")
             else:
-                print("邮件通知功能已关闭")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知功能已关闭")
         else:
-            print("IP地址或主机名未发生变化")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] IP地址或主机名未发生变化")
 
     def set_enable_wifi_connect(self, param):
         self.enable_wifi_connect = param
@@ -275,7 +276,6 @@ else:
 
 if __name__ == "__main__":
     fsm = AUTOFSM()
-    print(fsm.get_ip_address())
     while True:
         fsm.run()
         time.sleep(30)

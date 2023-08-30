@@ -1,5 +1,10 @@
+from io import StringIO
+
+from PyQt6.QtGui import QTextCursor
+
 import main
 import mainwindow
+import datetime
 from PyQt6 import QtCore, QtGui, QtWidgets
 import sys
 
@@ -18,6 +23,7 @@ class FSM_Thread(QtCore.QThread):
 
     def run(self):
         FSMMutex.lock()
+        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] FSM Thread Running")
         self.FSM.run()
         self.taskFinished.emit()
         FSMMutex.unlock()
@@ -40,18 +46,21 @@ class FSM_Thread(QtCore.QThread):
         FSMMutex.lock()
         self.FSM.set_enable_wifi_connect(param)
         self.SIGNAL_enable_wifi_connect.emit()
+        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 将WiFi连接功能设置为 {param}")
         FSMMutex.unlock()
 
     def set_enable_wifi_reconnect(self, param):
         FSMMutex.lock()
         self.FSM.set_enable_wifi_reconnect(param)
         self.SIGNAL_enable_wifi_reconnect.emit()
+        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 将失败重连功能设置为 {param}")
         FSMMutex.unlock()
 
     def set_enable_mail_notification(self, param):
         FSMMutex.lock()
         self.FSM.set_enable_mail_notification(param)
         self.SIGNAL_enable_mail_notification.emit()
+        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 将邮件通知功能设置为 {param}")
         FSMMutex.unlock()
 
     def get_enable_wifi_connect(self):
@@ -62,6 +71,18 @@ class FSM_Thread(QtCore.QThread):
 
     def get_enable_mail_notification(self):
         return self.FSM.enable_mail_notification
+
+
+class stdoutRedirect:
+    def __init__(self, textBrowser):
+        self.textBrowser = textBrowser
+
+    def write(self, string):
+        self.textBrowser.moveCursor(QTextCursor.MoveOperation.End)
+        self.textBrowser.insertPlainText(string)
+
+    def flush(self):
+        pass
 
 
 FSM_t = FSM_Thread()
@@ -75,6 +96,7 @@ timer.timeout.connect(lambda: FSM_t.start())
 timer.setInterval(20000)
 FSM_t.taskFinished.connect(lambda: FSM_t.load_state())
 timer.start()
+sys.stdout = stdoutRedirect(ui.textBrowser)
 
 ui.tabWidget.setCurrentWidget(ui.generalTab)
 ui.checkBox_1.stateChanged.connect(lambda: FSM_t.set_enable_wifi_connect(ui.checkBox_1.isChecked()))
@@ -86,7 +108,6 @@ FSM_t.SIGNAL_enable_wifi_reconnect.connect(
     lambda: ui.checkBox_2.setText("已启用" if FSM_t.get_enable_wifi_reconnect() else "未启用"))
 FSM_t.SIGNAL_enable_mail_notification.connect(
     lambda: ui.checkBox_3.setText("已启用" if FSM_t.get_enable_mail_notification() else "未启用"))
-
 
 MainWindow.show()
 sys.exit(app.exec())
