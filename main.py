@@ -244,6 +244,24 @@ class AUTOFSM:
         self.config["wifi_config"]["password"] = password
         yaml_process.write_config(self.config)
 
+    def set_mail_account(self, user, password):
+        self.config["mail_config"]["mail_user"] = user
+        self.config["mail_config"]["mail_pass"] = password
+        self.config["mail_config"]["sender"] = user
+        yaml_process.write_config(self.config)
+
+    def set_mail_receiver(self, param):
+        self.config["mail_config"]["receivers"] = param
+
+    def set_mail_smtp(self, host, port):
+        self.config["mail_config"]["mail_host"] = host
+        self.config["mail_config"]["mail_port"] = port
+        yaml_process.write_config(self.config)
+
+    def set_receivers(self, param):
+        self.config["mail_config"]["receivers"] = param
+        yaml_process.write_config(self.config)
+
 
 data_file = "data.yaml"
 config_file = "config.yaml"

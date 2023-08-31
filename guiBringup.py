@@ -1,10 +1,11 @@
-from io import StringIO
-
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QTextCursor
 
 import main
 import mainwindow
 import wifi_settings
+import mail_settings
+import receivers_list
 import datetime
 from PyQt6 import QtCore, QtGui, QtWidgets
 import sys
@@ -73,6 +74,9 @@ class FSM_Thread(QtCore.QThread):
     def get_enable_mail_notification(self):
         return self.FSM.enable_mail_notification
 
+    def get_mail_config(self):
+        return self.FSM.config["mail_config"]
+
 
 class stdoutRedirect:
     def __init__(self, textBrowser):
@@ -97,6 +101,52 @@ def set_wifi_account(FSM_d: FSM_Thread):
         FSMMutex.unlock()
 
 
+def set_mail_account(FSM_d: FSM_Thread):
+    dialog = QtWidgets.QDialog()
+    dialog_ui = mail_settings.Ui_Dialog()
+    dialog_ui.setupUi(dialog)
+    cur_mail_config = FSM_d.get_mail_config()
+    dialog_ui.mail_account.setText(cur_mail_config["mail_user"])
+    dialog_ui.mail_password.setText(cur_mail_config["mail_pass"])
+    dialog_ui.SMTP_host.setText(cur_mail_config["mail_host"])
+    dialog_ui.SMTP_port.setText(str(cur_mail_config["mail_port"]))
+    dialog_ui.pushButton.clicked.connect(lambda: set_receivers(FSM_d))
+    if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
+        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 已配置邮件")
+        FSMMutex.lock()
+        FSM_d.FSM.set_mail_account(dialog_ui.mail_account.text(), dialog_ui.mail_password.text())
+        FSM_d.FSM.set_mail_smtp(dialog_ui.SMTP_host.text(), dialog_ui.SMTP_port.text())
+        FSMMutex.unlock()
+
+
+def set_receivers(FSM_d: FSM_Thread):
+    dialog = QtWidgets.QDialog()
+    dialog_ui = receivers_list.Ui_Dialog()
+    dialog_ui.setupUi(dialog)
+    dialog_ui.confirmButton.clicked.connect(lambda: dialog.accept())
+    cur_mail_config = FSM_d.get_mail_config()
+    dialog_ui.listWidget.addItems(cur_mail_config["receivers"])
+
+    def delete_item():
+        selected_items = dialog_ui.listWidget.selectedItems()
+        for item in selected_items:
+            dialog_ui.listWidget.takeItem(dialog_ui.listWidget.row(item))
+
+    def add_item():
+        if len(dialog_ui.lineEdit.text()):
+            dialog_ui.listWidget.addItem(dialog_ui.lineEdit.text())
+            dialog_ui.lineEdit.clear()
+
+    dialog_ui.deleteButton.clicked.connect(lambda: delete_item())
+    dialog_ui.addButton.clicked.connect(lambda: add_item())
+
+    if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
+        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 已配置收件人列表")
+        FSMMutex.lock()
+        FSM_d.FSM.set_receivers([dialog_ui.listWidget.item(i).text() for i in range(dialog_ui.listWidget.count())])
+        FSMMutex.unlock()
+
+
 FSM_t = FSM_Thread()
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
@@ -108,7 +158,7 @@ timer.timeout.connect(lambda: FSM_t.start())
 timer.setInterval(20000)
 FSM_t.taskFinished.connect(lambda: FSM_t.load_state())
 timer.start()
-sys.stdout = stdoutRedirect(ui.textBrowser)
+# sys.stdout = stdoutRedirect(ui.textBrowser)
 
 ui.tabWidget.setCurrentWidget(ui.generalTab)
 ui.checkBox_1.stateChanged.connect(lambda: FSM_t.set_enable_wifi_connect(ui.checkBox_1.isChecked()))
@@ -116,6 +166,7 @@ ui.checkBox_2.stateChanged.connect(lambda: FSM_t.set_enable_wifi_reconnect(ui.ch
 ui.checkBox_3.stateChanged.connect(lambda: FSM_t.set_enable_mail_notification(ui.checkBox_3.isChecked()))
 ui.textBrowser.textChanged.connect(lambda: ui.textBrowser.moveCursor(QTextCursor.MoveOperation.End))
 ui.pushButton_1.clicked.connect(lambda: set_wifi_account(FSM_t))
+ui.pushButton_2.clicked.connect(lambda: set_mail_account(FSM_t))
 FSM_t.SIGNAL_enable_wifi_connect.connect(
     lambda: ui.checkBox_1.setText("已启用" if FSM_t.get_enable_wifi_connect() else "未启用"))
 FSM_t.SIGNAL_enable_wifi_reconnect.connect(
