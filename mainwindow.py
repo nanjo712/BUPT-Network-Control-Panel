@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
         self.textBrowser.setStyleSheet("")
         self.textBrowser.setObjectName("textBrowser")
         self.MovieLabel_1 = QtWidgets.QLabel(parent=self.generalTab)
-        self.MovieLabel_1.setGeometry(QtCore.QRect(40, 110, 161, 141))
+        self.MovieLabel_1.setGeometry(QtCore.QRect(40, 120, 161, 141))
         self.MovieLabel_1.setObjectName("MovieLabel_1")
         self.tabWidget.addTab(self.generalTab, "")
         self.SettingTab = QtWidgets.QWidget()
@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
         self.label_6.setBuddy(self.pushButton_1)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.textBrowser, self.checkBox_1)
         MainWindow.setTabOrder(self.checkBox_1, self.checkBox_2)
