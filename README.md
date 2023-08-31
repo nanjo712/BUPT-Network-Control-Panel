@@ -12,9 +12,17 @@ Focused on solve the problem of SSH and remote desktop connection to the school 
 
 用于解决校园网下SSH和远程桌面连接的问题
 
-It's tested on Windows 11 and Ubuntu 20.04. It should work on other Linux distributions and Windows 10.
+The CLI version is tested on Windows 11 and Ubuntu 20.04. It should work on other Linux distributions and Windows 10.
 
-已在Windows 11和Ubuntu 20.04上测试通过，应该可以在其他Linux发行版和Windows 10上正常运行
+CLI版本在Windows 11和Ubuntu 20.04上测试通过，应该可以在其他Linux发行版和Windows 10上运行。
+
+The GUI version is tested on Windows 11. It should work on Windows 10.
+
+GUI版本在Windows 11上测试通过，应该可以在Windows 10上运行。
+
+PyQt6 installation is required for GUI version. But it seems that PyQt6 is not available on Ubuntu 20.04. At least I can't install it.
+
+GUI版本需要PyQt6，但是似乎Ubuntu 20.04上没有PyQt6。至少我没法安装。
 
 ## Supported
 
@@ -24,7 +32,7 @@ It's tested on Windows 11 and Ubuntu 20.04. It should work on other Linux distri
 - 自动化连接BUPT-portal
 - 检测IP变动并发送邮件通知
 
-## Usage
+## Usage-CLI
 
 ### 1. Install
 
@@ -69,14 +77,32 @@ To use it easily, you can add it to startup application
 
 为了方便使用，你可以将它添加到开机启动项
 
+## Usage-GUI
+
+### 1. Install
+
+```bash
+git clone https://github.com/nanjo712/BUPT-Network-Control-Panel.git
+```
+
+### 2. Run
+
+```bash
+python3 guiBringup.py
+```
+
 ## TODO
 
 - Automatically connect to BUPT-mobile
-- Pack it as a CLI tool
 - Develop a GUI
 
 - 自动化连接BUPT-mobile
-- 打包为CLI工具，简化使用
 - 开发图形界面，简化使用
+
+## License
+
+GPLv3 License
+
+
 
 
