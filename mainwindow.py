@@ -91,10 +91,21 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.label_3.setBuddy(self.checkBox_2)
+        self.label_1.setBuddy(self.checkBox_3)
+        self.label_2.setBuddy(self.checkBox_1)
+        self.label_5.setBuddy(self.pushButton_2)
+        self.label_6.setBuddy(self.pushButton_1)
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.textBrowser, self.checkBox_1)
+        MainWindow.setTabOrder(self.checkBox_1, self.checkBox_2)
+        MainWindow.setTabOrder(self.checkBox_2, self.checkBox_3)
+        MainWindow.setTabOrder(self.checkBox_3, self.pushButton_1)
+        MainWindow.setTabOrder(self.pushButton_1, self.pushButton_2)
+        MainWindow.setTabOrder(self.pushButton_2, self.tabWidget)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

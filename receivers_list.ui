@@ -26,25 +26,12 @@
     <string>添加</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="editButton">
+  <widget class="QPushButton" name="deleteButton">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>250</y>
-     <width>101</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>编辑</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="deleteButton">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>250</y>
-     <width>101</width>
+     <width>151</width>
      <height>31</height>
     </rect>
    </property>
@@ -55,9 +42,9 @@
   <widget class="QPushButton" name="confirmButton">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>180</x>
      <y>250</y>
-     <width>101</width>
+     <width>161</width>
      <height>31</height>
     </rect>
    </property>
@@ -86,6 +73,13 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>listWidget</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>deleteButton</tabstop>
+  <tabstop>confirmButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

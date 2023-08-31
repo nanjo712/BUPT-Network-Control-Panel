@@ -33,6 +33,8 @@ class Ui_Dialog(object):
         self.lineEdit_2.setGeometry(QtCore.QRect(80, 70, 191, 31))
         self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
         self.lineEdit_2.setObjectName("lineEdit_2")
+        self.label_1.setBuddy(self.lineEdit_1)
+        self.label_2.setBuddy(self.lineEdit_2)
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept) # type: ignore

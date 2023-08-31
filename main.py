@@ -16,6 +16,7 @@ import urllib.error
 
 current_os = sys.platform
 
+
 def check_internet_connection():
     try:
         urllib.request.urlopen('https://www.baidu.com', timeout=1)
@@ -262,44 +263,51 @@ class AUTOFSM:
         self.config["mail_config"]["receivers"] = param
         yaml_process.write_config(self.config)
 
+    def get_wifi_config(self):
+        return self.config["wifi_config"]
 
-data_file = "data.yaml"
-config_file = "config.yaml"
 
-if os.path.exists(data_file) and os.path.exists(config_file):
-    pass
-else:
-    data = {"last_host_name": socket.gethostname(),
-            "last_ip_address": socket.gethostbyname(socket.gethostname()),
-            "url": "10.3.8.211",
-            "portal_SSID": "BUPT-portal"
-            }
-    config = {"enable_mail_notification": True,
-              "enable_wifi_connect": True,
-              "enable_wifi_reconnect": True,
-              "max_wait_time": 10,
-              "wifi_config":
-                  {
-                      "username": "",
-                      "password": ""
-                  },
-              "mail_config":
-                  {
-                      "mail_host": "smtp.exmail.qq.com",
-                      "mail_port": 465,
-                      "mail_user": "",
-                      "mail_pass": "",
-                      "sender": "",
-                      "receivers": [""]
-                  },
-              }
-    print("未找到配置文件，已自动生成配置文件，请修改配置文件后重新运行程序")
-    yaml_process.write_data(data)
-    yaml_process.write_config(config)
-    exit(0)
+def check_first_run():
+    data_file = "data.yaml"
+    config_file = "config.yaml"
+
+    if os.path.exists(data_file) and os.path.exists(config_file):
+        return True
+    else:
+        data = {"last_host_name": socket.gethostname(),
+                "last_ip_address": socket.gethostbyname(socket.gethostname()),
+                "url": "10.3.8.211",
+                "portal_SSID": "BUPT-portal"
+                }
+        config = {"enable_mail_notification": True,
+                  "enable_wifi_connect": True,
+                  "enable_wifi_reconnect": True,
+                  "max_wait_time": 10,
+                  "wifi_config":
+                      {
+                          "username": "",
+                          "password": ""
+                      },
+                  "mail_config":
+                      {
+                          "mail_host": "smtp.exmail.qq.com",
+                          "mail_port": 465,
+                          "mail_user": "",
+                          "mail_pass": "",
+                          "sender": "",
+                          "receivers": []
+                      },
+                  }
+        print("未找到配置文件，已自动生成配置文件模板")
+        yaml_process.write_data(data)
+        yaml_process.write_config(config)
+        return False
 
 
 if __name__ == "__main__":
+    if not check_first_run():
+        print("请编辑配置文件后重新运行程序")
+        exit(0)
     fsm = AUTOFSM()
     while True:
         fsm.run()

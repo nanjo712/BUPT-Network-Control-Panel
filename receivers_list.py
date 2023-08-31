@@ -16,14 +16,11 @@ class Ui_Dialog(object):
         self.addButton = QtWidgets.QPushButton(parent=Dialog)
         self.addButton.setGeometry(QtCore.QRect(20, 210, 101, 31))
         self.addButton.setObjectName("addButton")
-        self.editButton = QtWidgets.QPushButton(parent=Dialog)
-        self.editButton.setGeometry(QtCore.QRect(20, 250, 101, 31))
-        self.editButton.setObjectName("editButton")
         self.deleteButton = QtWidgets.QPushButton(parent=Dialog)
-        self.deleteButton.setGeometry(QtCore.QRect(130, 250, 101, 31))
+        self.deleteButton.setGeometry(QtCore.QRect(20, 250, 151, 31))
         self.deleteButton.setObjectName("deleteButton")
         self.confirmButton = QtWidgets.QPushButton(parent=Dialog)
-        self.confirmButton.setGeometry(QtCore.QRect(240, 250, 101, 31))
+        self.confirmButton.setGeometry(QtCore.QRect(180, 250, 161, 31))
         self.confirmButton.setObjectName("confirmButton")
         self.listWidget = QtWidgets.QListWidget(parent=Dialog)
         self.listWidget.setGeometry(QtCore.QRect(20, 21, 321, 181))
@@ -34,11 +31,14 @@ class Ui_Dialog(object):
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
+        Dialog.setTabOrder(self.listWidget, self.lineEdit)
+        Dialog.setTabOrder(self.lineEdit, self.addButton)
+        Dialog.setTabOrder(self.addButton, self.deleteButton)
+        Dialog.setTabOrder(self.deleteButton, self.confirmButton)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "收件人列表"))
         self.addButton.setText(_translate("Dialog", "添加"))
-        self.editButton.setText(_translate("Dialog", "编辑"))
         self.deleteButton.setText(_translate("Dialog", "删除"))
         self.confirmButton.setText(_translate("Dialog", "确认"))

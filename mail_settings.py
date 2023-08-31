@@ -57,11 +57,20 @@ class Ui_Dialog(object):
         self.SMTP_port = QtWidgets.QLineEdit(parent=self.groupBox_2)
         self.SMTP_port.setGeometry(QtCore.QRect(100, 79, 191, 21))
         self.SMTP_port.setObjectName("SMTP_port")
+        self.label.setBuddy(self.mail_account)
+        self.label_2.setBuddy(self.mail_password)
+        self.label_3.setBuddy(self.pushButton)
+        self.label_4.setBuddy(self.SMTP_host)
+        self.label_5.setBuddy(self.SMTP_port)
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept) # type: ignore
         self.buttonBox.rejected.connect(Dialog.reject) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Dialog)
+        Dialog.setTabOrder(self.mail_account, self.mail_password)
+        Dialog.setTabOrder(self.mail_password, self.pushButton)
+        Dialog.setTabOrder(self.pushButton, self.SMTP_host)
+        Dialog.setTabOrder(self.SMTP_host, self.SMTP_port)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate

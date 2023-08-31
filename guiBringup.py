@@ -90,10 +90,21 @@ class stdoutRedirect:
         pass
 
 
+class receiversDialog(QtWidgets.QDialog):
+    SIGNAL_delete_item = QtCore.pyqtSignal()
+
+    def keyPressEvent(self, a0: QtGui.QKeyEvent):
+        if a0.key() == Qt.Key.Key_Delete:
+            self.SIGNAL_delete_item.emit()
+
+
 def set_wifi_account(FSM_d: FSM_Thread):
     dialog = QtWidgets.QDialog()
     dialog_ui = wifi_settings.Ui_Dialog()
     dialog_ui.setupUi(dialog)
+    cur_wifi_config = FSM_d.FSM.get_wifi_config()
+    dialog_ui.lineEdit_1.setText(cur_wifi_config["username"])
+    dialog_ui.lineEdit_2.setText(cur_wifi_config["password"])
     if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
         print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 已设置WiFi账号密码")
         FSMMutex.lock()
@@ -120,7 +131,7 @@ def set_mail_account(FSM_d: FSM_Thread):
 
 
 def set_receivers(FSM_d: FSM_Thread):
-    dialog = QtWidgets.QDialog()
+    dialog = receiversDialog()
     dialog_ui = receivers_list.Ui_Dialog()
     dialog_ui.setupUi(dialog)
     dialog_ui.confirmButton.clicked.connect(lambda: dialog.accept())
@@ -138,6 +149,7 @@ def set_receivers(FSM_d: FSM_Thread):
             dialog_ui.lineEdit.clear()
 
     dialog_ui.deleteButton.clicked.connect(lambda: delete_item())
+    dialog.SIGNAL_delete_item.connect(lambda: delete_item())
     dialog_ui.addButton.clicked.connect(lambda: add_item())
 
     if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
@@ -147,6 +159,9 @@ def set_receivers(FSM_d: FSM_Thread):
         FSMMutex.unlock()
 
 
+tag = 0
+if main.check_first_run():
+    tag = 1
 FSM_t = FSM_Thread()
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
@@ -157,8 +172,7 @@ timer = QtCore.QTimer()
 timer.timeout.connect(lambda: FSM_t.start())
 timer.setInterval(20000)
 FSM_t.taskFinished.connect(lambda: FSM_t.load_state())
-timer.start()
-# sys.stdout = stdoutRedirect(ui.textBrowser)
+sys.stdout = stdoutRedirect(ui.textBrowser)
 
 ui.tabWidget.setCurrentWidget(ui.generalTab)
 ui.checkBox_1.stateChanged.connect(lambda: FSM_t.set_enable_wifi_connect(ui.checkBox_1.isChecked()))
@@ -174,5 +188,16 @@ FSM_t.SIGNAL_enable_wifi_reconnect.connect(
 FSM_t.SIGNAL_enable_mail_notification.connect(
     lambda: ui.checkBox_3.setText("已启用" if FSM_t.get_enable_mail_notification() else "未启用"))
 
+if tag == 0:
+    QMessageBox = QtWidgets.QMessageBox()
+    QMessageBox.setWindowTitle("欢迎使用BUPT-Network-Control-Panel！")
+    QMessageBox.setText("首次运行，请先配置WiFi账号密码和邮件账号密码")
+    QMessageBox.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+    QMessageBox.exec()
+    ui.tabWidget.setCurrentWidget(ui.SettingTab)
+    set_wifi_account(FSM_t)
+    set_mail_account(FSM_t)
+    set_receivers(FSM_t)
 MainWindow.show()
+timer.start()
 sys.exit(app.exec())

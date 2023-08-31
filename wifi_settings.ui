@@ -57,6 +57,9 @@
    <property name="text">
     <string>账号</string>
    </property>
+   <property name="buddy">
+    <cstring>lineEdit_1</cstring>
+   </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
@@ -69,6 +72,9 @@
    </property>
    <property name="text">
     <string>密码</string>
+   </property>
+   <property name="buddy">
+    <cstring>lineEdit_2</cstring>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_2">
