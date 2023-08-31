@@ -99,4 +99,10 @@ python3 guiBringup.py
 - 自动化连接BUPT-mobile
 - 开发图形界面，简化使用
 
+## License
+
+GPLv3 License
+
+
+
 
