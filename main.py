@@ -8,12 +8,14 @@ import subprocess
 import os
 import sys
 import netifaces
+import datetime
 from email.mime.text import MIMEText
 from email.header import Header
 import urllib.request
 import urllib.error
 
 current_os = sys.platform
+
 
 def check_internet_connection():
     try:
@@ -172,98 +174,144 @@ class AUTOFSM:
         if self.enable_wifi_connect:
             if self.check_wifi_state():
                 if self.get_current_wifi_ssid() != self.network_ssid:
-                    print(f"尝试连接{self.network_ssid} Wi-Fi网络")
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 尝试连接{self.network_ssid} Wi-Fi网络")
                     ret = self.connect_to_wifi()
                     if ret:
                         response = self.login()
                         if response == 200:
-                            print("Wi-Fi网络连接成功")
+                            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接成功")
                         else :
-                            print("Wi-Fi网络连接失败")
+                            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
                     else :
-                        print("Wi-Fi网络连接失败")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
             else:
-                print(f"尝试连接{self.network_ssid} Wi-Fi网络")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 尝试连接{self.network_ssid} Wi-Fi网络")
                 ret = self.connect_to_wifi()
                 if ret:
                     response = self.login()
                     if response == 200:
-                        print("Wi-Fi网络连接成功")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接成功")
                     else:
-                        print("Wi-Fi网络连接失败")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
                 else:
-                    print("Wi-Fi网络连接失败")
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
         else:
-            print("Wi-Fi 连接功能已关闭")
-            exit(0)
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi 连接功能已关闭")
         if check_internet_connection():
-            print("已连接到互联网")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 已连接到互联网")
         else:
-            print("未连接到互联网")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 未连接到互联网")
             if self.enable_wifi_reconnect:
                 ret = self.connect_to_wifi()
                 if ret:
                     response = self.login()
                     if response == 200:
-                        print("Wi-Fi网络连接成功")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接成功")
                     else:
-                        print("Wi-Fi网络连接失败")
+                        print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
                 else:
-                    print("Wi-Fi网络连接失败")
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
             else:
-                print("Wi-Fi 重连功能已关闭")
-                exit(0)
-
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi 重连功能已关闭")
         if self.check_ip():
-            print("IP地址或主机名发生变化")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] IP地址或主机名发生变化")
             if self.enable_mail_notification:
-                self.mail_notification(self.last_host_name, self.last_ip_address)
-                print("邮件通知功能已开启,已发送邮件")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知功能已开启")
+                if self.mail_notification(self.last_host_name, self.last_ip_address):
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知发送成功")
+                else:
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知发送失败")
             else:
-                print("邮件通知功能已关闭")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知功能已关闭")
         else:
-            print("IP地址或主机名未发生变化")
+            print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] IP地址或主机名未发生变化")
+
+    def set_enable_wifi_connect(self, param):
+        self.enable_wifi_connect = param
+        self.config["enable_wifi_connect"] = param
+        yaml_process.write_config(self.config)
+
+    def set_enable_wifi_reconnect(self, param):
+        self.enable_wifi_reconnect = param
+        self.config["enable_wifi_reconnect"] = param
+        yaml_process.write_config(self.config)
+
+    def set_enable_mail_notification(self, param):
+        self.enable_mail_notification = param
+        self.config["enable_mail_notification"] = param
+        yaml_process.write_config(self.config)
+
+    def set_wifi_account(self, username, password):
+        self.username = username
+        self.password = password
+        self.config["wifi_config"]["username"] = username
+        self.config["wifi_config"]["password"] = password
+        yaml_process.write_config(self.config)
+
+    def set_mail_account(self, user, password):
+        self.config["mail_config"]["mail_user"] = user
+        self.config["mail_config"]["mail_pass"] = password
+        self.config["mail_config"]["sender"] = user
+        yaml_process.write_config(self.config)
+
+    def set_mail_receiver(self, param):
+        self.config["mail_config"]["receivers"] = param
+
+    def set_mail_smtp(self, host, port):
+        self.config["mail_config"]["mail_host"] = host
+        self.config["mail_config"]["mail_port"] = port
+        yaml_process.write_config(self.config)
+
+    def set_receivers(self, param):
+        self.config["mail_config"]["receivers"] = param
+        yaml_process.write_config(self.config)
+
+    def get_wifi_config(self):
+        return self.config["wifi_config"]
 
 
-data_file = "data.yaml"
-config_file = "config.yaml"
+def check_first_run():
+    data_file = "data.yaml"
+    config_file = "config.yaml"
 
-if os.path.exists(data_file) and os.path.exists(config_file):
-    pass
-else:
-    data = {"last_host_name": socket.gethostname(),
-            "last_ip_address": socket.gethostbyname(socket.gethostname()),
-            "url": "10.3.8.211",
-            "portal_SSID": "BUPT-portal"
-            }
-    config = {"enable_mail_notification": True,
-              "enable_wifi_connect": True,
-              "enable_wifi_reconnect": True,
-              "max_wait_time": 10,
-              "wifi_config":
-                  {
-                      "username": "",
-                      "password": ""
-                  },
-              "mail_config":
-                  {
-                      "mail_host": "smtp.exmail.qq.com",
-                      "mail_port": 465,
-                      "mail_user": "",
-                      "mail_pass": "",
-                      "sender": "",
-                      "receivers": [""]
-                  },
-              }
-    print("未找到配置文件，已自动生成配置文件，请修改配置文件后重新运行程序")
-    yaml_process.write_data(data)
-    yaml_process.write_config(config)
-    exit(0)
+    if os.path.exists(data_file) and os.path.exists(config_file):
+        return True
+    else:
+        data = {"last_host_name": socket.gethostname(),
+                "last_ip_address": socket.gethostbyname(socket.gethostname()),
+                "url": "10.3.8.211",
+                "portal_SSID": "BUPT-portal"
+                }
+        config = {"enable_mail_notification": True,
+                  "enable_wifi_connect": True,
+                  "enable_wifi_reconnect": True,
+                  "max_wait_time": 10,
+                  "wifi_config":
+                      {
+                          "username": "",
+                          "password": ""
+                      },
+                  "mail_config":
+                      {
+                          "mail_host": "smtp.exmail.qq.com",
+                          "mail_port": 465,
+                          "mail_user": "",
+                          "mail_pass": "",
+                          "sender": "",
+                          "receivers": []
+                      },
+                  }
+        print("未找到配置文件，已自动生成配置文件模板")
+        yaml_process.write_data(data)
+        yaml_process.write_config(config)
+        return False
 
 
 if __name__ == "__main__":
+    if not check_first_run():
+        print("请编辑配置文件后重新运行程序")
+        exit(0)
     fsm = AUTOFSM()
-    print(fsm.get_ip_address())
     while True:
         fsm.run()
         time.sleep(30)
