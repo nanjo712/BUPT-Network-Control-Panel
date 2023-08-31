@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QTextCursor
+from PyQt6.QtGui import QTextCursor, QMovie
 
 import main
 import mainwindow
@@ -165,14 +165,23 @@ if main.check_first_run():
 FSM_t = FSM_Thread()
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
+MainWindow.setWindowIcon(QtGui.QIcon("favicon.ico"))
 ui = mainwindow.Ui_MainWindow()
 ui.setupUi(MainWindow)
+
 FSM_t.load_state()
+FSM_t.taskFinished.connect(lambda: FSM_t.load_state())
+sys.stdout = stdoutRedirect(ui.textBrowser)
 timer = QtCore.QTimer()
 timer.timeout.connect(lambda: FSM_t.start())
 timer.setInterval(20000)
-FSM_t.taskFinished.connect(lambda: FSM_t.load_state())
-sys.stdout = stdoutRedirect(ui.textBrowser)
+
+movie = QMovie("AL1S.gif")
+ui.MovieLabel_1.setMovie(movie)
+ui.MovieLabel_2.setMovie(movie)
+ui.MovieLabel_1.setScaledContents(True)
+ui.MovieLabel_2.setScaledContents(True)
+movie.start()
 
 ui.tabWidget.setCurrentWidget(ui.generalTab)
 ui.checkBox_1.stateChanged.connect(lambda: FSM_t.set_enable_wifi_connect(ui.checkBox_1.isChecked()))
@@ -197,7 +206,7 @@ if tag == 0:
     ui.tabWidget.setCurrentWidget(ui.SettingTab)
     set_wifi_account(FSM_t)
     set_mail_account(FSM_t)
-    set_receivers(FSM_t)
+
 MainWindow.show()
 timer.start()
 sys.exit(app.exec())

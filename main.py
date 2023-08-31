@@ -185,7 +185,7 @@ class AUTOFSM:
                     else :
                         print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] Wi-Fi网络连接失败")
             else:
-                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')} 尝试连接{self.network_ssid}] Wi-Fi网络")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 尝试连接{self.network_ssid} Wi-Fi网络")
                 ret = self.connect_to_wifi()
                 if ret:
                     response = self.login()
@@ -216,8 +216,11 @@ class AUTOFSM:
         if self.check_ip():
             print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] IP地址或主机名发生变化")
             if self.enable_mail_notification:
-                self.mail_notification(self.last_host_name, self.last_ip_address)
-                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知功能已开启,已发送邮件")
+                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知功能已开启")
+                if self.mail_notification(self.last_host_name, self.last_ip_address):
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知发送成功")
+                else:
+                    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知发送失败")
             else:
                 print(f"[{datetime.datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}] 邮件通知功能已关闭")
         else:
